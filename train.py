@@ -49,7 +49,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     """
     model.train()
     for batch, x_y in enumerate(dataloader):
-        X, y = x_y[:, :205].type(torch.float16), torch.as_tensor(x_y[:, 205], dtype=torch.long)#, device='cuda')
+        X, y = x_y[:, :205].type(torch.float16), torch.as_tensor(x_y[:, 205], dtype=torch.long, device='cuda')
         with torch.set_grad_enabled(True):
             # Compute prediction and loss
 
@@ -78,9 +78,9 @@ def test_loop(dataloader, model, loss_fn):
     with torch.no_grad():
         model.eval()
         for x_y in dataloader:
-            X, y = x_y[:, :205].type(torch.float16), torch.as_tensor(x_y[:, 205], dtype=torch.long)#, device='cuda')
+            X, y = x_y[:, :205].type(torch.float16), torch.as_tensor(x_y[:, 205], dtype=torch.long, device='cuda')
             # Y用来计算L1 loss, y是CrossEntropy loss.
-            Y = torch.zeros(size=(len(y), 4))#, device='cuda')
+            Y = torch.zeros(size=(len(y), 4), device='cuda')
             for i in range(len(Y)):
                 Y[i][y[i]] = 1
             pred = net(X.float())
@@ -223,15 +223,15 @@ if __name__ == '__main__':
     w_decay = 1e-1
     n_epoch = 100
     b_size = 2
-    #device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     net = Model()
-    #net.to(device)
+    net.to(device)
     optimizer = torch.optim.Adam(params=net.parameters(), lr=adm_lr, weight_decay=w_decay, amsgrad=True)
     loss_fn = nn.CrossEntropyLoss(reduction='sum')
     # 拆分训练测试集
     train, test = train_test_split(data, test_size=0.2)
-#    train, test = torch.cuda.FloatTensor(train), torch.cuda.FloatTensor(test)
-    train, test = torch.FloatTensor(train), torch.FloatTensor(test)
+    train, test = torch.cuda.FloatTensor(train), torch.cuda.FloatTensor(test)
+    #train, test = torch.FloatTensor(train), torch.FloatTensor(test)
     train_loader = torch.utils.data.DataLoader(dataset=train, batch_size=b_size, shuffle=True)
     test_loader = torch.utils.data.DataLoader(dataset=test, batch_size=b_size)
 

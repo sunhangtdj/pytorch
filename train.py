@@ -219,19 +219,19 @@ if __name__ == '__main__':
     #print(pred_data.shape)
 
     # 初始化模型
-    adm_lr = 1e-1
-    sgd_lr = 5e-1
+    adm_lr = 1e-4
+    sgd_lr = 5e-5
     mom = 0.1
     w_decay = 1e-1
-    n_epoch = 100
-    b_size = 2
+    n_epoch = 50
+    b_size = 64
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     net = Model()
     net.to(device)
     optimizer = torch.optim.Adam(params=net.parameters(), lr=adm_lr, weight_decay=w_decay, amsgrad=True)
     loss_fn = nn.CrossEntropyLoss(reduction='sum')
     # 拆分训练测试集
-    train, test = train_test_split(data, test_size=0.2)
+    train, test = train_test_split(data, test_size=0.3)
     train, test = torch.cuda.FloatTensor(train), torch.cuda.FloatTensor(test)
     #train, test = torch.FloatTensor(train), torch.FloatTensor(test)
     train_loader = torch.utils.data.DataLoader(dataset=train, batch_size=b_size, shuffle=True)

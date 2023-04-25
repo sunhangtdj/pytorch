@@ -7,6 +7,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch, gc
 
+shuju = []
+shuju1 = []
 
 
 def process_data(data):
@@ -248,10 +250,21 @@ if __name__ == '__main__':
 
  #           torch.cuda.empty_cache()
 
-        test_loop(test_loader, net, loss_fn)
+#        test_loop(test_loader, net, loss_fn)
+
 #        if hasattr(torch.cuda, 'empty_cache'):
 #            torch.cuda.empty_cache()
-
+        shu = test_loop(test_loader, net, loss_fn)
+        shu = shu*100
+        #print(shu)
+        #print(type(shu))
+        shuju = np.array(shu)
+        #print(type(shuju))
+        shuju1.append(shuju)
         end = time.time()
         print('training time: ', end - start)
 #predict
+plt.plot(shuju1)
+plt.title("Accuracy")
+plt.savefig("Accuracy1")
+plt.show()
